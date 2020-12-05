@@ -73,10 +73,13 @@ class ShadowCopy(object):
         return self.__vss_get_id(shadow_id).DeviceObject
 
     def __vss_create(self, drive_letter):
+        """
+        An error/exception means that the process does not run under priviliges right (admin mode)
+        """
         sc = self.wmi.get("Win32_ShadowCopy")
         createparams = sc.Methods_("Create").InParameters.SpawnInstance_()
         createparams.Properties_[1].value = "{0}:\\".format(drive_letter)
-        results = wmi.ExecMethod_("Create", createparams)
+        results = sc.ExecMethod_("Create", createparams)
         return results.Properties_[1].value
 
     def __vss_delete(self, shadow_id):
